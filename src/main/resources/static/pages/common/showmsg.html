@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自定义弹窗</title>
+    <link rel="stylesheet" href="./alert.css">
+</head>
+<body>
+
+<button>Click me</button>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="./showmsg.js"></script>
+<script>
+    document.querySelector("button").addEventListener("click",()=>{
+        new $Msg({
+            content:"我的自定义弹窗好了",
+            type:"success",
+            cancle:function(){
+                return;
+            },
+            confirm:function(){
+               return
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

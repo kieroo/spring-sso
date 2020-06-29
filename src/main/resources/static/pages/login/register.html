@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../img/favicon.ico">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../pages/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../pages/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./signin.css" rel="stylesheet">
+    <link href="../../pages/common/alert.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../pages/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../pages/assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="container" id="app">
+
+    <form class="form-signin" onsubmit="return false">
+        <h2 class="form-signin-heading">Please sign up</h2>
+        <label class="sr-only">用户名</label>
+        <input type="text" id="username" class="form-control" placeholder="用户名" required autofocus
+               v-model="username">
+        <label class="sr-only">密码</label>
+        <input type="password" id="password" class="form-control" placeholder="密码" required v-model="password" @blur="encodePwd">
+        <label class="sr-only">确认密码</label>
+        <input type="password" id="passwordAgain" class="form-control" placeholder="确认密码" required
+               v-model="passwordAgain" @blur="encodePwdAgain">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" @click="login">登录</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" @click="register">注册</button>
+    </form>
+
+</div> <!-- /container -->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../pages/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="../common/WebUtils.js"></script>
+<script src="../common/showmsg.js"></script>
+<script src="/js/jquery.base64.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: "#app",
+        data: {
+            username: null,
+            password: null,
+            passwordAgain: null
+        },
+        methods: {
+            login: function () {
+                window.location.href="/pages/login/login.html";
+            },
+            register: function () {
+                const password = this.password;
+                const username = this.username;
+                const passwordAgain = this.passwordAgain;
+                if (SOCOUtils.isBlank(password) || SOCOUtils.isBlank(username) || SOCOUtils.isBlank(passwordAgain)) {
+                    return;
+                }
+                if (!SOCOUtils.isEquals(passwordAgain,password)) {
+                    showMsg.showSuccess("密码不一致");
+                    return;
+                }
+                axios.post("/user/register", {
+                    'username': this.username,
+                    'password': this.password,
+                    'passwordAgain': this.passwordAgain
+                })
+                    .then(function (response) {
+                        console.log(response)
+                        if (response.data.code == '000000') {
+                            showMsg.showSuccess(response.data.msg);
+                        } else {
+                            showMsg.showError(response.data.msg)
+                        }
+                    }, function (err) {
+                        showMsg.showError("注册失败，请稍后再试！")
+                    })
+            },
+            encodePwd:function () {
+                this.password = $.base64.encode(this.password)
+            },
+            encodePwdAgain:function () {
+                this.passwordAgain = $.base64.encode(this.passwordAgain);
+            }
+        }
+    })
+</script>
+</body>
+</html>
